@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        text-decoration: none;
+        list-style: none;
+      }
+
+      body {
+        height: 100vh;
+        width: 100vw;
+      }
+
+      .content-wrap {
+        background: #101010;
+        text-align: center;
+        padding-bottom: 68px;
+      }
+
+      .img-wrap {
+        width: 100%;
+        text-align: center;
+      }
+
+      .content-wrap img {
+        max-width: 80%;
+        margin-top: 34px;
+      }
+
+      .content-wrap h2 {
+        margin-top: 50px;
+        font-size: 20px;
+        color: #fff !important;
+      }
+
+      .content-wrap p {
+        margin-top: 20px;
+        color: rgba(255, 255, 255, 0.6) !important;
+        font-size: 14px;
+      }
+
+      .reset-password-btn {
+        display: block;
+        margin: 30px auto;
+        width: 178px;
+        line-height: 40px;
+        border-radius: 30px;
+        background: #27e6ff;
+        color: #000 !important;
+        font-size: 16px;
+        font-weight: bold;
+      }
+
+      .code-title {
+        display: block;
+        margin: 20px auto;
+        width: 110px;
+        line-height: 18px;
+        font-size: 8px;
+        color: rgba(255, 255, 255, 0.6) !important;
+        border: 0.5px solid #242424;
+        border-radius: 30px;
+      }
+
+      .code-content {
+        display: inline-block;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: #1c1c1c;
+        border-radius: 8px;
+        line-height: 40px;
+        color: #fff;
+        font-size: 20px;
+        margin-top: 10px;
+        padding: 8px 20px;
+        letter-spacing: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="content-wrap">
+      <div class="img-wrap">
+        <img src="https://nebulai.network/email/logo.png" />
+      </div>
+
+      <div>
+        <h2>Reset your password</h2>
+        <p>
+          Use the link below to reset your account's password. This link will <br />
+          expire in 48 hours.
+        </p>
+
+        <a class="reset-password-btn" href="https://nebulai.network/login/forgot?auth_code=&email="
+          >Reset password</a
+        >
+      </div>
+
+      <div>
+        <h2>Please verify your Email</h2>
+        <p>
+          Enter the code below to sign in and link your Email to Nebulai <br />
+          account. This code will expire in 5 minutes.
+        </p>
+
+        <span class="code-title"> VERIFICATION CODE </span>
+
+        <div class="code-content">234567</div>
+      </div>
+    </div>
+  </body>
+</html>

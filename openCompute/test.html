@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <div>
+      <label for="email">Send Code</label>
+      <input type="email" id="email" value="*@gmail.com" />
+      <button onclick="sendCode()">Send Code</button>
+      <p id="sendCodeResult"></p>
+    </div>
+    <div>
+      <label for="auth">Auth</label>
+      <input type="auth" id="auth" value="auth_code" />
+      <button onclick="auth()">Login</button>
+      <p id="authResult"></p>
+    </div>
+    <div>
+      <button onclick="runTest()">Task</button>
+      <p id="taskResult"></p>
+    </div>
+    <div>
+      <label for="inviteBy">InviteBy</label>
+      <input type="inviteBy" id="inviteBy" value="Other_UID" />
+      <button onclick="inviteBy()">InviteBy</button>
+      <p id="inviteByResult"></p>
+    </div>
+
+    <div>
+      <label for="userInfo">userInfo</label>
+      <button onclick="userInfo()">userInfo</button>
+      <p id="userInfoResult"></p>
+    </div>
+
+    <script>
+      const api = 'http://192.168.0.7:7001/'
+
+      var jwt
+      var email
+      var result_1
+      var result_2
+
+      var task_lock = false
+
+      function rand(seed) {
+        let a = BigInt(20253141037)
+        let c = BigInt(10324135202)
+        let s = BigInt(seed)
+        let m = BigInt(1000)
+
+        return Number((a * s + c) % m)
+      }
+
+      function generateMatrix(seed, n) {
+        let matrix = new Array(n)
+        for (let i = 0; i < n; i++) {
+          matrix[i] = new Float64Array(n)
+          for (let j = 0; j < n; j++) {
+            matrix[i][j] = rand(seed)
+            seed = matrix[i][j]
+          }
+        }
+
+        return matrix
+      }
+
+      function multiplyMatrices(A, B, n) {
+        let C = new Array(n)
+        for (let i = 0; i < n; i++) {
+          C[i] = new Float64Array(n)
+          for (let j = 0; j < n; j++) {
+            let sum = 0
+            for (let k = 0; k < n; k++) {
+              sum += A[i][k] * B[k][j]
+            }
+            C[i][j] = sum
+          }
+        }
+        return C
+      }
+
+      async function calc(A, n) {
+        let sum = ''
+        for (let i = 0; i < n; i++) {
+          for (let j = 0; j < n; j++) {
+            sum += A[i][j]
+          }
+        }
+        let result = await hashToInteger(sum, 10000000)
+        return result
+      }
+
+      async function hashToInteger(input, mod) {
+        const encoder = new TextEncoder()
+        const data = encoder.encode(input)
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data)
+
+        const hashArray = Array.from(new Uint8Array(hashBuffer))
+        const hashHex = hashArray
+          .map(b => b.toString(16).padStart(2, '0'))
+          .join('')
+
+        const hashInt = BigInt('0x' + hashHex) % BigInt(mod)
+
+        return Number(hashInt)
+      }
+
+      async function fetchData(last_result_1, last_result_2) {
+        try {
+          var response
+
+          const data = {
+            result_1: '' + last_result_1,
+            result_2: '' + last_result_2,
+          }
+
+          const requestOptions = {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              token: jwt,
+            },
+            body: JSON.stringify(data),
+          }
+
+          response = await fetch(api + 'task', requestOptions)
+
+          let ret_data = await response.json()
+
+          console.log(ret_data)
+
+          return ret_data
+        } catch (error) {
+          console.error('error', error)
+          return null
+        }
+      }
+
+      async function task() {
+        // document.getElementById('taskResult').innerText = 'calc'
+        if (task_lock) {
+        //   document.getElementById('taskResult').innerText = 'wait last task'
+          return
+        }
+        task_lock = true
+
+        var req_ret
+
+        if (result_1 == null || result_2 == null) {
+          req_ret = await fetchData()
+        } else {
+          req_ret = await fetchData(result_1, result_2)
+        }
+
+        if (req_ret != null && req_ret.code === 0) {
+          let startTime = Date.now()
+
+          console.log('startTime:', startTime)
+
+          let seed1 = req_ret.data.seed1
+          let seed2 = req_ret.data.seed2
+          let n = req_ret.data.matrix_size
+
+          const A = generateMatrix(seed1, n)
+          const B = generateMatrix(seed2, n)
+
+          const C = multiplyMatrices(A, B, n)
+
+          const calc_result = await calc(C, n)
+
+          let endTime = Date.now()
+
+          result_1 = startTime / calc_result
+          result_2 = calc_result / (endTime - startTime)
+
+          console.log(
+            'endtime:',
+            endTime,
+            '        finish duration:',
+            endTime - startTime,
+            '      calc_result:',
+            calc_result
+          )
+          let timeTaken = (endTime - startTime) / 1000 // change to sec
+          document.getElementById(
+            'taskResult'
+          ).innerHTML += `calc finish (${n}×${n})，duration：${timeTaken.toFixed(
+            3
+          )} sec <br />`
+        }
+
+        task_lock = false
+      }
+
+      async function runTest() {
+        await task()
+        runTest()
+      }
+
+      async function sendCode_() {
+        document.getElementById('sendCodeResult').innerText = 'wait send'
+
+        email = document.getElementById('email').value
+
+        const data = {
+          email: email,
+        }
+
+        try {
+          var response
+
+          const requestOptions = {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+          }
+
+          response = await fetch(api + 'login/email', requestOptions)
+
+          let ret_data = await response.json()
+
+          console.log(ret_data)
+
+          if (ret_data.code === 0) {
+            document.getElementById('sendCodeResult').innerText =
+              'wait ' + email + 'auth code'
+          } else {
+            document.getElementById('sendCodeResult').innerText = ret_data.data
+          }
+        } catch (error) {
+          console.error('error', error)
+          return null
+        }
+      }
+
+      function sendCode() {
+        sendCode_()
+      }
+
+      async function auth_() {
+        var authCode = document.getElementById('auth').value
+
+        const data = {
+          email: email,
+          auth_code: '' + authCode,
+        }
+
+        try {
+          var response
+
+          const requestOptions = {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+          }
+
+          response = await fetch(api + 'login/auth_email', requestOptions)
+
+          let ret_data = await response.json()
+
+          console.log(ret_data)
+
+          if (ret_data.code === 0) {
+            document.getElementById('authResult').innerText =
+              email + '|' + ret_data.data.info.uid + ' login'
+
+            jwt = ret_data.data.jwt
+          } else {
+            document.getElementById('authResult').innerText =
+              email + ' login failed'
+          }
+        } catch (error) {
+          console.error('error', error)
+          return null
+        }
+      }
+
+      function auth() {
+        auth_()
+      }
+
+      async function inviteBy_() {
+        inviteBy = document.getElementById('inviteBy').value
+
+        const data = {
+          invite_by: '' + inviteBy,
+        }
+
+        try {
+          var response
+
+          const requestOptions = {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              token: jwt,
+            },
+            body: JSON.stringify(data),
+          }
+
+          response = await fetch(api + 'set/invite_by', requestOptions)
+
+          let ret_data = await response.json()
+
+          console.log(ret_data)
+
+          if (ret_data.code === 0) {
+            document.getElementById('inviteByResult').innerText =
+              'Be invited to succeed'
+          } else {
+            document.getElementById('inviteByResult').innerText =
+              'Be invited to failed'
+          }
+        } catch (error) {
+          console.error('error', error)
+          return null
+        }
+      }
+
+      function inviteBy() {
+        inviteBy_()
+      }
+
+      async function userInfo_() {
+        try {
+          var response
+
+          const requestOptions = {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              token: jwt,
+            },
+          }
+
+          response = await fetch(api + 'get/user_info', requestOptions)
+
+          let ret_data = await response.json()
+
+          console.log(ret_data)
+
+          if (ret_data.code === 0) {
+            document.getElementById('userInfoResult').innerText =
+              JSON.stringify(ret_data.data, null, 4)
+          } else {
+            document.getElementById('userInfoResult').innerText =
+              'query user info error'
+          }
+        } catch (error) {
+          console.error('error', error)
+          return null
+        }
+      }
+
+      function userInfo() {
+        userInfo_()
+      }
+    </script>
+  </body>
+</html>

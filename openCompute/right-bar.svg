@@ -1,0 +1,24 @@
+<svg width="144" height="461" viewBox="0 0 144 461" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_5250_10957)">
+<foreignObject x="-21" y="-53" width="227" height="567"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(4px);clip-path:url(#bgblur_1_5250_10957_clip_path);height:100%;width:100%"></div></foreignObject><g filter="url(#filter0_d_5250_10957)" data-figma-bg-blur-radius="8">
+<path d="M39 98.9034C39 85.7563 47.0412 73.947 59.2738 69.1293L105.032 51.108C119.055 45.5852 130.679 35.2904 137.856 22.0376L146 7V454L137.856 438.962C130.679 425.71 119.055 415.415 105.032 409.892L59.2737 391.871C47.0412 387.053 39 375.244 39 362.097V98.9034Z" fill="black" fill-opacity="0.2" shape-rendering="crispEdges"/>
+<path d="M145 450.054L138.735 438.486C131.446 425.027 119.64 414.571 105.398 408.962L59.6406 390.94C47.7903 386.273 40 374.833 40 362.097V98.9033C40 86.1671 47.7903 74.7267 59.6406 70.0596L105.398 52.0381C119.64 46.4289 131.446 35.9734 138.735 22.5137L145 10.9453V450.054Z" stroke="#4CE4FF" stroke-opacity="0.18" stroke-width="2" shape-rendering="crispEdges"/>
+</g>
+</g>
+<defs>
+<filter id="filter0_d_5250_10957" x="-21" y="-53" width="227" height="567" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset/>
+<feGaussianBlur stdDeviation="30"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0.201491 0 0 0 0 0.933458 0 0 0 0 1 0 0 0 0.25 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_5250_10957"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_5250_10957" result="shape"/>
+</filter>
+<clipPath id="bgblur_1_5250_10957_clip_path" transform="translate(21 53)"><path d="M39 98.9034C39 85.7563 47.0412 73.947 59.2738 69.1293L105.032 51.108C119.055 45.5852 130.679 35.2904 137.856 22.0376L146 7V454L137.856 438.962C130.679 425.71 119.055 415.415 105.032 409.892L59.2737 391.871C47.0412 387.053 39 375.244 39 362.097V98.9034Z"/>
+</clipPath><clipPath id="clip0_5250_10957">
+<rect width="144" height="461" fill="white"/>
+</clipPath>
+</defs>
+</svg>
